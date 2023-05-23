@@ -1,6 +1,8 @@
 /// <reference types="Cypress" />
 
 describe('Central de Atendimento ao Cliente TAT', function() {
+    const THREE_SECONDS_MS = 3000
+    
     beforeEach(function() {
         cy.visit('./src/index.html')
       })
@@ -11,52 +13,73 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
     it('exerício 1 - preenche os campos obrigatórios e envia o formulário', function() {
         const longText = 'Fazendo um testinho maroto aqui. Fazendo um testinho maroto aqui. Fazendo um testinho maroto aqui. Fazendo um testinho maroto aqui. Fazendo um testinho maroto aqui. Fazendo um testinho maroto aqui. Fazendo um testinho maroto aqui.'
-        cy.get('#firstName').type('João')
-        cy.get('#lastName').type('do Teste')
-        cy.get('#email').type('joao.test@test.com')
+        cy.clock()
+        
+        cy.get('#firstName').type('João', {delay: 0})
+        cy.get('#lastName').type('do Teste', {delay: 0})
+        cy.get('#email').type('joao.test@test.com', {delay: 0})
         cy.get('#open-text-area').type(longText, {delay: 0})
         cy.contains('button','Enviar').click()
         cy.get('.success').should('be.visible')
+
+        cy.tick(THREE_SECONDS_MS)
+
+        cy.get('.success').should('be.not.visible')
     })
 
     it('exerício 2 - exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function() {
-        cy.get('#firstName').type('João')
-        cy.get('#lastName').type('do Teste')
-        cy.get('#email').type('joao.test_test.com')
-        cy.get('#open-text-area').type('Fazendo um testinho maroto aqui.')
+        cy.clock()
+        cy.get('#firstName').type('João', {delay: 0})
+        cy.get('#lastName').type('do Teste', {delay: 0})
+        cy.get('#email').type('joao.test_test.com', {delay: 0})
+        cy.get('#open-text-area').type('Fazendo um testinho maroto aqui.', {delay: 0})
         cy.contains('button','Enviar').click()
         cy.get('.error').should('be.visible')
+
+        cy.tick(THREE_SECONDS_MS)
+
+        cy.get('.error').should('be.not.visible')
     })
 
     it('exerício 3 - validar que o campo telefone aceita apenas números', function() {
-        cy.get('#phone').type('telefone')
+        cy.get('#phone').type('telefone', {delay: 0})
         cy.get('#phone').should('be.empty')
     })
 
     it('exerício 4 - exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function() {
-        cy.get('#firstName').type('João')
-        cy.get('#lastName').type('do Teste')
-        cy.get('#email').type('joao.test@test.com')
+        cy.clock()
+        cy.get('#firstName').type('João', {delay: 0})
+        cy.get('#lastName').type('do Teste', {delay: 0})
+        cy.get('#email').type('joao.test@test.com', {delay: 0})
         cy.get('#phone-checkbox').check()
-        cy.get('#open-text-area').type('Fazendo um testinho maroto aqui.')
+        cy.get('#open-text-area').type('Fazendo um testinho maroto aqui.', {delay: 0})
         cy.contains('button','Enviar').click()
         cy.get('.error').should('be.visible')
+
+        cy.tick(THREE_SECONDS_MS)
+
+        cy.get('.error').should('be.not.visible')
     })
 
     it('exerício 5 - deve limpar os campos preenchidos anteriormente', function() {
-        cy.get('#firstName').type('João').should('have.value','João')
+        cy.get('#firstName').type('João', {delay: 0}).should('have.value','João')
                             .clear().should('be.empty')
-        cy.get('#lastName').type('do Teste').should('have.value', 'do Teste')
+        cy.get('#lastName').type('do Teste', {delay: 0}).should('have.value', 'do Teste')
                            .clear().should('be.empty')
-        cy.get('#email').type('joao.test@test.com').should('have.value', 'joao.test@test.com')
+        cy.get('#email').type('joao.test@test.com', {delay: 0}).should('have.value', 'joao.test@test.com')
                         .clear().should('be.empty')
-        cy.get('#open-text-area').type('Fazendo um testinho maroto aqui.').should('have.value', 'Fazendo um testinho maroto aqui.')
+        cy.get('#open-text-area').type('Fazendo um testinho maroto aqui.', {delay: 0}).should('have.value', 'Fazendo um testinho maroto aqui.')
                                  .clear().should('be.empty')
     })
 
     it('exerício 6 - exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', function() {
+        cy.clock()
         cy.contains('button','Enviar').click()
         cy.get('.error').should('be.visible')
+
+        cy.tick(THREE_SECONDS_MS)
+
+        cy.get('.error').should('be.not.visible')
     })
 
     it('Exercício 7 - envia o formuário com sucesso usando um comando customizado', function() {
@@ -66,12 +89,19 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
     it('exerício 8 - clicar no botão enviar usando contains', function() {
         const longText = 'Fazendo um testinho maroto aqui. Fazendo um testinho maroto aqui. Fazendo um testinho maroto aqui. Fazendo um testinho maroto aqui. Fazendo um testinho maroto aqui. Fazendo um testinho maroto aqui. Fazendo um testinho maroto aqui.'
-        cy.get('#firstName').type('João')
-        cy.get('#lastName').type('do Teste')
-        cy.get('#email').type('joao.test@test.com')
+        
+        cy.clock()
+        
+        cy.get('#firstName').type('João', {delay: 0})
+        cy.get('#lastName').type('do Teste', {delay: 0})
+        cy.get('#email').type('joao.test@test.com', {delay: 0})
         cy.get('#open-text-area').type(longText, {delay: 0})
         cy.contains('button','Enviar').click()
         cy.get('.success').should('be.visible')
+
+        cy.tick(THREE_SECONDS_MS)
+
+        cy.get('.success').should('be.not.visible')
     })
 
     it('Exercício - seleciona um produto (YouTube) por seu texto', function() {
@@ -142,5 +172,38 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         
         cy.contains('Talking About Testing').should('be.be.visible')
     })
+
+    it('exibe e esconde as mensagens de sucesso e erro usando o .invoke', () => {
+        cy.get('.success')
+          .should('not.be.visible')
+          .invoke('show')
+          .should('be.visible')
+          .and('contain', 'Mensagem enviada com sucesso.')
+          .invoke('hide')
+          .should('not.be.visible')
+        cy.get('.error')
+          .should('not.be.visible')
+          .invoke('show')
+          .should('be.visible')
+          .and('contain', 'Valide os campos obrigatórios!')
+          .invoke('hide')
+          .should('not.be.visible')
+      })
+
+      it('preenche a area de texto usando o comando invoke', function() {
+        const longText = Cypress._.repeat('0123456789', 20)
+        cy.get('#open-text-area').invoke('val', longText)
+                                 .should('have.value', longText)
+      })
+
+      it('faz uma requisição HTTP', function() {
+        cy.request('https://cac-tat.s3.eu-central-1.amazonaws.com/index.html')
+          .should(function(response) {
+            const { status, statusText, body } = response
+            expect(status).to.eq(200)
+            expect(statusText).to.eq('OK')
+            expect(body).to.include('CAC TAT')
+          })
+      })
   })
   
