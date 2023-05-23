@@ -205,5 +205,12 @@ describe('Central de Atendimento ao Cliente TAT', function() {
             expect(body).to.include('CAC TAT')
           })
       })
+
+      it('encontre o gato', function() {
+        cy.get('#cat')
+          .should('not.be.visible')
+          .invoke('show')
+          .should('be.visible')
+      })
   })
   
